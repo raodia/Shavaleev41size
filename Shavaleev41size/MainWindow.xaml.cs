@@ -23,7 +23,7 @@ namespace Shavaleev41size
         public MainWindow()
         {
             InitializeComponent();
-            MainFrame.Navigate(new feetPage());
+            MainFrame.Navigate(new AuthPage2());
             Manager.MainFrame = MainFrame;
         }
 

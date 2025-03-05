@@ -1,0 +1,65 @@
+﻿<Window x:Class="Shavaleev41size.OrderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Shavaleev41size"
+        mc:Ignorable="d"
+        Title="OrderWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*" ></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0">Дата формировани заказа</TextBlock>
+        <TextBlock Grid.Row="1">Дата доставки заказа</TextBlock>
+        <TextBlock Grid.Row="2">ФИО клиента</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="1" Name="ClientTB"></TextBlock>
+        <TextBlock Grid.Row="3">Номер заказа</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="1" Name="TBOrderID"></TextBlock>
+        <TextBox Grid.Row="0" Grid.Column="1"> 
+            
+        </TextBox>
+        <TextBox Grid.Row="1" Grid.Column="1" Name="OrderDP">
+
+        </TextBox>
+        
+
+        <ListView Name="ShoeLV">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        
+                    </Grid>
+                </DataTemplate>
+                        
+            </ListView.ItemTemplate>
+        </ListView>
+        <TextBlock Grid.Row="5">Пункт выдачи</TextBlock>
+        <ComboBox Name="PickupCb">
+            
+        </ComboBox>
+        <Button Name="OrderBtn" Grid.Row="6"></Button>
+    </Grid>
+</Window>

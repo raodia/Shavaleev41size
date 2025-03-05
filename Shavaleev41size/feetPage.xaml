@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Shavaleev41size"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="feetPage" FontFamily="Comic Sans MS">
+      Title="feetPage" FontFamily="Comic Sans MS" FontSize="20">
 
     <!--Background="#FFCC6600"-->
     <!--<Frame Background="#FFFFCC99">
@@ -14,7 +14,101 @@
     </Frame>-->
 
     <Grid >
-        <Button Content="Кнопка" Name="Button1" Click="Button1_Click"></Button>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <WrapPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Вы авторизованы как "></TextBlock>
+                <TextBlock Name="fullname"></TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Роль: "></TextBlock>
+                <TextBlock Name="role"></TextBlock>
+            </StackPanel>
+        </WrapPanel>
+
+        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Text="Количество записей: "></TextBlock>
+                <TextBlock Name="countProd"></TextBlock>
+                <TextBlock Text=" из "></TextBlock>
+                <TextBlock Name="maxCountProd"></TextBlock>
+            </StackPanel>
+            
+            <StackPanel Orientation="Vertical" Margin="0,0,20,0">
+                <TextBlock Text="Поиск" TextAlignment="Right"></TextBlock>
+                <TextBox Width="300" Name="search" TextChanged="search_TextChanged"></TextBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                <TextBlock Text="Сортировка"></TextBlock>
+                <RadioButton Content="По возрастанию цены" GroupName="sort" Name="ascending" Checked="ascending_Checked"></RadioButton>
+                <RadioButton Content="По убыванию цены" GroupName="sort" Name="descending" Checked="descending_Checked"></RadioButton>
+
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                <TextBlock Text="Фильтрация"></TextBlock>
+                <ComboBox Name="CbDisc" SelectionChanged="CbDisc_SelectionChanged" FontSize="16" Width="200">
+                    <TextBlock>Все</TextBlock>
+                    <TextBlock>От 0 до 9,99</TextBlock>
+                    <TextBlock>От 10 до 14,99</TextBlock>
+                    <TextBlock>От 15</TextBlock>
+                </ComboBox>
+            </StackPanel>
+        </WrapPanel>
+        
+        <ListView Name="Listv" Grid.Row="2">
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Добавить к заказу" Click="MenuItem_Click"></MenuItem>
+                </ContextMenu>
+            </ListView.ContextMenu>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="1000"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Image Grid.RowSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" Width="150">
+                            <Image.Source>
+                                <Binding Path="ProductImage">
+                                    <Binding.TargetNullValue>
+                                        <ImageSource>
+                                        /img/picture.png
+                                        </ImageSource>
+                                    </Binding.TargetNullValue>
+                                </Binding>
+                            </Image.Source>
+                        </Image>
+
+                        <TextBlock Text="{Binding ProductName}"           Grid.Row="0" Grid.Column="1" FontSize="25"></TextBlock>
+                        <TextBlock Text="{Binding ProductDescription}"    Grid.Row="1" Grid.Column="1" FontSize = "25"></TextBlock>
+                        <TextBlock Text="{Binding ProductManufacturer}"   Grid.Row="2" Grid.Column="1" FontSize ="25"></TextBlock>
+                        <TextBlock Text="{Binding ProductCost, StringFormat={}{0} руб.}" Grid.Row="3" Grid.Column="1" FontSize ="25"></TextBlock>
+                        <TextBlock Text="Скидка"                          Grid.Row="1" Grid.Column="2" FontSize= "25" Margin="30,0,0,0"></TextBlock>
+                        <TextBlock Text="{Binding ProductDiscountAmount, StringFormat= {}{0}% }" Grid.Row="2" Grid.Column="2" FontSize="25" Margin="30,0,0,0"></TextBlock>
+                    </Grid>
+                    
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Name="ShowOrderBtn" Content="Корзина" Click="ShowOrderBtn_Click"></Button>
     </Grid>
 
     

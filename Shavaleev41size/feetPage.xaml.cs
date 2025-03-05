@@ -15,19 +15,152 @@ using System.Windows.Shapes;
 
 namespace Shavaleev41size
 {
-    /// <summary>
-    /// Логика взаимодействия для feetPage.xaml
-    /// </summary>
     public partial class feetPage : Page
     {
-        public feetPage()
+        private void Update()
+        {
+            var currentProd = Shavaleev41Entities.getContext().Product.ToList();
+            maxCountProd.Text = (currentProd.Count).ToString();
+
+            switch (CbDisc.SelectedIndex)
+            {
+                case 0:
+                    currentProd = Shavaleev41Entities.getContext().Product.ToList();
+                    break;
+                case 1:
+                    currentProd = currentProd.Where(a => (Convert.ToInt32(a.ProductDiscountAmount) >= 0 && Convert.ToInt32(a.ProductDiscountAmount) < 10)).ToList();
+                    break;
+                case 2:
+                    currentProd = currentProd.Where(a => (Convert.ToInt32(a.ProductDiscountAmount) >= 10 && Convert.ToInt32(a.ProductDiscountAmount) < 15)).ToList();
+                    break;
+                case 3:
+                    currentProd = currentProd.Where(a => (Convert.ToInt32(a.ProductDiscountAmount) >= 15)).ToList();
+                    break;
+                default:
+                    currentProd = Shavaleev41Entities.getContext().Product.ToList();
+                    break;
+            }
+
+            currentProd = currentProd.Where(a => a.ProductName.ToLower().Contains(search.Text.ToLower())).ToList();
+
+            Listv.ItemsSource = currentProd.ToList();
+
+            if (descending.IsChecked.Value)
+            {
+                Listv.ItemsSource = currentProd.OrderByDescending(a => a.ProductCost).ToList();
+            }
+            if (ascending.IsChecked.Value)
+            {
+                Listv.ItemsSource = currentProd.OrderBy(a => a.ProductCost);
+            }
+
+            countProd.Text = (currentProd.Count).ToString();
+        }
+
+            public feetPage(User currentUser)
         {
             InitializeComponent();
+
+            if (currentUser != null)
+            {
+                fullname.Text = currentUser.UserSurname + " " + currentUser.UserName + " " + currentUser.UserPatronymic;
+
+
+                switch (currentUser.UserRole)
+                {
+                    case 1:
+                        role.Text = "Клиент";
+                        break;
+                    case 2:
+                        role.Text = "Менеджер";
+                        break;
+                    default:
+                        role.Text = "Администратор";
+                        break;
+                }
+            }
+            else
+            {
+                fullname.Text = "Гость";
+                role.Text = "Гость";
+            }
+            var currentData = Shavaleev41Entities.getContext().Product.ToList();
+            Listv.ItemsSource = currentData;
+
+            CbDisc.SelectedIndex = 0;
         }
 
         private void Button1_Click(object sender, RoutedEventArgs e)
         {
             Manager.MainFrame.Navigate(new AddEditPage());
+
+        }
+
+        private void CbDisc_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Update();
+        }
+
+        private void search_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Update();
+
+        }
+
+        private void ascending_Checked(object sender, RoutedEventArgs e)
+        {
+            Update();
+
+        }
+
+        private void descending_Checked(object sender, RoutedEventArgs e)
+        {
+            Update();
+
+        }
+
+        //public List<OrderProduct> selectedProducts =  
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            //if (ShoeLV.SelectedIndex == 0)
+            //{
+            //    var prod = ShoeLV.SelectedItem as Product;
+            //    selectedProducts.Add(prod);
+
+            //    var newOrderProd = new OrderProduct();
+            //    newOrderProd.OrderID = newOrderID;
+
+            //    newOrderProd.ProductArticleNumber = prod.ProductArticleNumber;
+            //    newOrderProd.ProductCount = 1;
+
+            //    var selectedOP = selectedOrderProducts.Where(p => Equals(p.ProductArticleNumber, prod ProductArticleNumber));
+
+            //    if (selectedOP.Count() == 0)
+            //    {
+            //        selectedOrderProducts.Add(newOrderProd);
+            //    }
+            //    else
+            //    {
+            //        foreach (OrderProduct p in selectedOrderProducts)
+            //        {
+            //            if (p.ProductArticleNumber == prod.ProductArticleNumber)
+            //            {
+            //                p.ProductCount++;
+            //            }
+            //        }
+            //    }
+
+            //    OrderBtn.Visibility = Visibility.Visible;
+            //    ShoeLV.SelectedIndex = -1;
+            //}
+        }
+
+        private void ShowOrderBtn_Click(object sender, RoutedEventArgs e)
+        {
+            //selectedProducts = selectedProducts.Distinct().ToList();
+            //OrderWindow orderWindow = new OrderWindow(selectedOrderProducts, selectedProducts, fullname.Text);
+            //orderWindow.ShowDialog();
         }
     }
 }
