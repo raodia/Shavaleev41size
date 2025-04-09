@@ -17,6 +17,13 @@ namespace Shavaleev41size
 {
     public partial class feetPage : Page
     {
+        int _newOrderID;
+        User _currentUser;
+        List<Product> _Tablelist;
+        List<Product> _selectedProducts = new List<Product>();
+        private Order _currentOrder = new Order();
+        List<OrderProduct> _selectedOrderProducts = new List<OrderProduct>();
+
         private void Update()
         {
             var currentProd = Shavaleev41Entities.getContext().Product.ToList();
@@ -59,6 +66,7 @@ namespace Shavaleev41size
 
             public feetPage(User currentUser)
         {
+            this._currentUser = currentUser;
             InitializeComponent();
 
             if (currentUser != null)
@@ -120,59 +128,60 @@ namespace Shavaleev41size
         }
 
         //public List<OrderProduct> selectedProducts =  
-        List<OrderProduct> selectedOrderProducts = new List<OrderProduct>();
-        List<Product> selectedProducts = new List<Product>();
+        //List<OrderProduct> selectedOrderProducts = new List<OrderProduct>();
+        //List<Product> selectedProducts = new List<Product>();
 
 
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var currentProd = Shavaleev41Entities.getContext().Product.ToList();
-            var currentOrderProd = Shavaleev41Entities.getContext().OrderProduct.ToList();
+            //var currentProd = Shavaleev41Entities.getContext().Product.ToList();
+            //var currentOrderProd = Shavaleev41Entities.getContext().OrderProduct.ToList();
 
-            if (openWindow.Visibility == Visibility.Hidden || selectedProducts.Count > 0)
-            {
-                //if (selectedOrderProducts.Contains(currentOrderProd[Listv.SelectedIndex]) || selectedProducts.Contains(currentProd[Listv.SelectedIndex]))
-                //{
-                    
-                //}
-                //selectedOrderProducts.Add(currentOrderProd[Listv.SelectedIndex]);
-                selectedProducts.Add(currentProd[Listv.SelectedIndex]);
-            }
-            openWindow.Visibility = Visibility.Visible;
-
-
-
-            //if (ShoeLV.SelectedIndex == 0)
+            //if (openWindow.Visibility == Visibility.Hidden || selectedProducts.Count > 0)
             //{
-            //    var prod = ShoeLV.SelectedItem as Product;
-            //    selectedProducts.Add(prod);
+            //    //if (selectedOrderProducts.Contains(currentOrderProd[Listv.SelectedIndex]) || selectedProducts.Contains(currentProd[Listv.SelectedIndex]))
+            //    //{
 
-            //    var newOrderProd = new OrderProduct();
-            //    newOrderProd.OrderID = newOrderID;
-
-            //    newOrderProd.ProductArticleNumber = prod.ProductArticleNumber;
-            //    newOrderProd.ProductCount = 1;
-
-            //    var selectedOP = selectedOrderProducts.Where(p => Equals(p.ProductArticleNumber, prod ProductArticleNumber));
-
-            //    if (selectedOP.Count() == 0)
-            //    {
-            //        selectedOrderProducts.Add(newOrderProd);
-            //    }
-            //    else
-            //    {
-            //        foreach (OrderProduct p in selectedOrderProducts)
-            //        {
-            //            if (p.ProductArticleNumber == prod.ProductArticleNumber)
-            //            {
-            //                p.ProductCount++;
-            //            }
-            //        }
-            //    }
-
-            //    ShoeLV.SelectedIndex = -1;
+            //    //}
+            //    //selectedOrderProducts.Add(currentOrderProd[Listv.SelectedIndex]);
+            //    selectedProducts.Add(currentProd[Listv.SelectedIndex]);
             //}
+            //openWindow.Visibility = Visibility.Visible;
+
+
+
+            if (Listv.SelectedIndex >= 0)
+            {
+                var prod = Listv.SelectedItem as Product;
+                _selectedProducts.Add(prod);
+
+                var newOrderProd = new OrderProduct();
+                newOrderProd.OrderID = _newOrderID;
+
+                newOrderProd.ProductArticleNumber = prod.ProductArticleNumber;
+                newOrderProd.ProductCount = 1;
+
+                var selectedOP = _selectedOrderProducts.Where(p => Equals(p.ProductArticleNumber, prod.ProductArticleNumber));
+
+                if (selectedOP.Count() == 0)
+                {
+                    _selectedOrderProducts.Add(newOrderProd);
+                }
+                else
+                {
+                    foreach (OrderProduct p in _selectedOrderProducts)
+                    {
+                        if (p.ProductArticleNumber == prod.ProductArticleNumber)
+                        {
+                            p.ProductCount++;
+                        }
+                    }
+                }
+
+                openWindow.Visibility = Visibility.Visible;
+                Listv.SelectedIndex = -1;
+            }
         }
 
         //private void ShowOrderBtn_Click(object sender, RoutedEventArgs e)
@@ -185,9 +194,37 @@ namespace Shavaleev41size
         private void openWindow_Click(object sender, RoutedEventArgs e)
         {
 
-            OrderWindow orderWindow = new OrderWindow(selectedOrderProducts, selectedProducts, fullname.Text);
-            orderWindow.Show();
+            _selectedProducts = _selectedProducts.Distinct().ToList();
 
+           foreach (var product in _selectedProducts)
+            {
+               var orderProduct = _selectedOrderProducts.FirstOrDefault(p =>
+                    p.ProductArticleNumber == product.ProductArticleNumber);
+
+                if (orderProduct != null)
+                {
+                    product.PrCount = orderProduct.ProductCount;
+                }
+                else
+                {
+                   product.PrCount = 1;
+                }
+            }
+
+            OrderWindow orderWindow = new OrderWindow(_selectedOrderProducts, _selectedProducts, _currentUser);
+            bool? result = orderWindow.ShowDialog();
+
+            if (result == true)
+            {
+                _selectedProducts.Clear();
+                _selectedOrderProducts.Clear();
+                Listv.Items.Refresh();
+
+
+                openWindow.Visibility = _selectedProducts.Any() ? Visibility.Visible : Visibility.Hidden;
+
+
+            }
         }
     }
 }
