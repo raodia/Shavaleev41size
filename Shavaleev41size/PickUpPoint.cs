@@ -20,6 +20,13 @@ namespace Shavaleev41size
             this.Order = new HashSet<Order>();
         }
     
+        public string PickUpVisual
+        {
+            get
+            {
+                return PickUpIndex + ", " + PickUpCity + ", " + PickUpStreet + ", " + PickUpVault;
+            }
+        }
         public int PickUpPointID { get; set; }
         public string PickUpIndex { get; set; }
         public string PickUpCity { get; set; }

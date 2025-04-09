@@ -120,9 +120,29 @@ namespace Shavaleev41size
         }
 
         //public List<OrderProduct> selectedProducts =  
+        List<OrderProduct> selectedOrderProducts = new List<OrderProduct>();
+        List<Product> selectedProducts = new List<Product>();
+
+
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
+            var currentProd = Shavaleev41Entities.getContext().Product.ToList();
+            var currentOrderProd = Shavaleev41Entities.getContext().OrderProduct.ToList();
+
+            if (openWindow.Visibility == Visibility.Hidden || selectedProducts.Count > 0)
+            {
+                //if (selectedOrderProducts.Contains(currentOrderProd[Listv.SelectedIndex]) || selectedProducts.Contains(currentProd[Listv.SelectedIndex]))
+                //{
+                    
+                //}
+                //selectedOrderProducts.Add(currentOrderProd[Listv.SelectedIndex]);
+                selectedProducts.Add(currentProd[Listv.SelectedIndex]);
+            }
+            openWindow.Visibility = Visibility.Visible;
+
+
+
             //if (ShoeLV.SelectedIndex == 0)
             //{
             //    var prod = ShoeLV.SelectedItem as Product;
@@ -151,16 +171,23 @@ namespace Shavaleev41size
             //        }
             //    }
 
-            //    OrderBtn.Visibility = Visibility.Visible;
             //    ShoeLV.SelectedIndex = -1;
             //}
         }
 
-        private void ShowOrderBtn_Click(object sender, RoutedEventArgs e)
+        //private void ShowOrderBtn_Click(object sender, RoutedEventArgs e)
+        //{
+        //    //selectedProducts = selectedProducts.Distinct().ToList();
+        //    //OrderWindow orderWindow = new OrderWindow(selectedOrderProducts, selectedProducts, fullname.Text);
+        //    //orderWindow.ShowDialog();
+        //}
+
+        private void openWindow_Click(object sender, RoutedEventArgs e)
         {
-            //selectedProducts = selectedProducts.Distinct().ToList();
-            //OrderWindow orderWindow = new OrderWindow(selectedOrderProducts, selectedProducts, fullname.Text);
-            //orderWindow.ShowDialog();
+
+            OrderWindow orderWindow = new OrderWindow(selectedOrderProducts, selectedProducts, fullname.Text);
+            orderWindow.Show();
+
         }
     }
 }

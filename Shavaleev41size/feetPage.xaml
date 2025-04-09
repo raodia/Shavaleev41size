@@ -17,7 +17,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
+            <!--<RowDefinition Height="auto"></RowDefinition>-->
 
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
@@ -31,6 +31,7 @@
                 <TextBlock Text="Роль: "></TextBlock>
                 <TextBlock Name="role"></TextBlock>
             </StackPanel>
+            <Button Content="Корзина" Visibility="Hidden" Name="openWindow" Click="openWindow_Click"></Button>
         </WrapPanel>
 
         <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
@@ -50,16 +51,15 @@
                 <TextBlock Text="Сортировка"></TextBlock>
                 <RadioButton Content="По возрастанию цены" GroupName="sort" Name="ascending" Checked="ascending_Checked"></RadioButton>
                 <RadioButton Content="По убыванию цены" GroupName="sort" Name="descending" Checked="descending_Checked"></RadioButton>
-
             </StackPanel>
 
             <StackPanel Orientation="Vertical" Margin="20,0,0,0">
                 <TextBlock Text="Фильтрация"></TextBlock>
                 <ComboBox Name="CbDisc" SelectionChanged="CbDisc_SelectionChanged" FontSize="16" Width="200">
                     <TextBlock>Все</TextBlock>
-                    <TextBlock>От 0 до 9,99</TextBlock>
-                    <TextBlock>От 10 до 14,99</TextBlock>
-                    <TextBlock>От 15</TextBlock>
+                    <TextBlock>От 0% до 9,99%</TextBlock>
+                    <TextBlock>От 10% до 14,99%</TextBlock>
+                    <TextBlock>От 15%</TextBlock>
                 </ComboBox>
             </StackPanel>
         </WrapPanel>
@@ -70,6 +70,7 @@
                     <MenuItem Header="Добавить к заказу" Click="MenuItem_Click"></MenuItem>
                 </ContextMenu>
             </ListView.ContextMenu>
+            
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -108,7 +109,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Button Name="ShowOrderBtn" Content="Корзина" Click="ShowOrderBtn_Click"></Button>
+
     </Grid>
 
     

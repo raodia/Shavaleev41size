@@ -24,73 +24,88 @@ namespace Shavaleev41size
         private Order currentOrder = new Order();
         private OrderProduct currentOrderProduct = new OrderProduct();
 
-        public void SetDeliveryDate()
-        {
-
-        }
+    
         public OrderWindow(List<OrderProduct> selectedOrderProducts, List<Product> selectedProducts, string FIO)
         {
             InitializeComponent();
-            //this.selectedOrderProducts = selectedOrderProducts;
-            //this.selectedProducts = selectedProducts;
-            //this.currentOrder = currentOrder;
-            //this.currentOrderProduct = currentOrderProduct;
+
             var currentPickups = Shavaleev41Entities.getContext().PickUpPoint.ToList();
+            
             PickupCb.ItemsSource = currentPickups;
+            PickupCb.DisplayMemberPath = "PickUpVisual";
+
 
             ClientTB.Text = FIO;
-            TBOrderID.Text = selectedOrderProducts.First().OrderID.ToString();
+            //TBOrderID.Text = selectedOrderProducts.First().OrderID.ToString();
 
-            ShoeLV.ItemsSource = selectedProducts;
             foreach(Product p in selectedProducts)
             {
-                p.ProductQuantityInStock = 1;
-                foreach(OrderProduct q in selectedOrderProducts)
+                p.PrCount = 0;
+                foreach (Product q in selectedProducts)
                 {
-                    if (p.ProductArticleNumber == q.ProductArticleNumber) p.ProductQuantityInStock = q.ProductCount;
+                    if (p == q)
+                    {
+                        p.PrCount++;
+                    }
+
+                }
+
+                foreach (OrderProduct q in selectedOrderProducts)
+                {
+                    if (p.ProductArticleNumber == q.ProductArticleNumber) p.PrCount = q.ProductCount;
                 }
             }
+            ShoeLV.ItemsSource = selectedProducts.Distinct();
 
             this.selectedOrderProducts = selectedOrderProducts;
             this.selectedProducts = selectedProducts;
             OrderDP.Text = DateTime.Now.ToString();
-            SetDeliveryDate();
+            DeliveryDP.Text = DateTime.Parse(OrderDP.Text).AddDays(3).ToString();
+
+            
+ 
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void minusOneBtn_Click(object sender, RoutedEventArgs e)
         {
-            
-            if (ShoeLV.SelectedIndex == 0)
+            var butt = (sender as Button).DataContext as Product;
+
+            //var index = ShoeLV.Items.IndexOf(item);
+            butt.PrCount--;
+            if (butt.PrCount < 1)
             {
-                var prod = ShoeLV.SelectedItem as Product;
-                selectedProducts.Add(prod);
-
-                var newOrderProd = new OrderProduct();
-                newOrderProd.OrderID = 0;
-
-                newOrderProd.ProductArticleNumber = prod.ProductArticleNumber;
-                newOrderProd.ProductCount = 1;
-
-                var selectedOP = selectedOrderProducts.Where(p => Equals(p.ProductArticleNumber, prod.ProductArticleNumber));
-
-                if (selectedOP.Count() == 0)
-                {
-                    selectedOrderProducts.Add(newOrderProd);
-                }
-                else
-                {
-                    foreach (OrderProduct p in selectedOrderProducts)
-                    {
-                        if (p.ProductArticleNumber == prod.ProductArticleNumber)
-                        {
-                            p.ProductCount++;
-                        }
-                    }
-                }
-
-                OrderBtn.Visibility = Visibility.Visible;
-                ShoeLV.SelectedIndex = -1;
+                selectedProducts.Remove(butt);
+                
             }
+            ShoeLV.UpdateLayout();
+            ShoeLV.ItemsSource = selectedProducts.Distinct();
+            if (selectedProducts.Count == 0)
+            {
+                this.Close();
+            }
+
+        }
+
+        private void plusOneBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var butt = (sender as Button).DataContext as Product;
+            //var index = ShoeLV.Items.IndexOf(item);
+            butt.PrCount++;
+            ShoeLV.UpdateLayout();
+            ShoeLV.ItemsSource = selectedProducts.Distinct();
+
+
+        }
+
+        private void OrderBtn_Click(object sender, RoutedEventArgs e)
+        {
+            currentOrder.OrderID++;
+            currentOrder.OrderDate = DateTime.Now;
+            Shavaleev41Entities.getContext().Order.Add(currentOrder);
+            Shavaleev41Entities.getContext().SaveChanges();
+            MessageBox.Show("Заказ добавлен");
+            this.Close();
+
         }
     }
 }

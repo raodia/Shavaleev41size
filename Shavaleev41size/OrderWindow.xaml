@@ -5,36 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Shavaleev41size"
         mc:Ignorable="d"
-        Title="OrderWindow" Height="450" Width="800">
+        Title="OrderWindow" Height="450" Width="800" FontFamily="Comic Sans MS" FontSize="15">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*" ></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0">Дата формировани заказа</TextBlock>
-        <TextBlock Grid.Row="1">Дата доставки заказа</TextBlock>
-        <TextBlock Grid.Row="2">ФИО клиента</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0">Дата формировани заказа</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0">Дата доставки заказа</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="0">ФИО клиента</TextBlock>
         <TextBlock Grid.Row="2" Grid.Column="1" Name="ClientTB"></TextBlock>
-        <TextBlock Grid.Row="3">Номер заказа</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="0">Номер заказа</TextBlock>
         <TextBlock Grid.Row="3" Grid.Column="1" Name="TBOrderID"></TextBlock>
-        <TextBox Grid.Row="0" Grid.Column="1"> 
+        <DatePicker Grid.Row="0" Grid.Column="1" Name="OrderDP"> 
             
-        </TextBox>
-        <TextBox Grid.Row="1" Grid.Column="1" Name="OrderDP">
-
-        </TextBox>
+        </DatePicker>
+        <DatePicker Grid.Row="1" Grid.Column="1" Name="DeliveryDP">
+        
+        </DatePicker>
         
 
-        <ListView Name="ShoeLV">
+        <ListView Name="ShoeLV" Grid.ColumnSpan="2" Grid.Row="6">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -50,16 +50,34 @@
                             <ColumnDefinition></ColumnDefinition>
                             <ColumnDefinition></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-                        
+                        <Image Grid.RowSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill" Width="150" Grid.Column="0">
+                            <Image.Source>
+                                <Binding Path="ProductImage">
+                                    <Binding.TargetNullValue>
+                                        <ImageSource>
+                                            /img/picture.png
+                                        </ImageSource>
+                                    </Binding.TargetNullValue>
+                                </Binding>
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Text="{Binding ProductName}"           Grid.Row="0" Grid.Column="1" FontSize="25"></TextBlock>
+                        <TextBlock Text="{Binding ProductDescription}"    Grid.Row="1" Grid.Column="1" FontSize = "25"></TextBlock>
+                        <TextBlock Text="{Binding ProductManufacturer}"   Grid.Row="2" Grid.Column="1" FontSize ="25"></TextBlock>
+                        <TextBlock Text="{Binding ProductCost, StringFormat={}{0} руб.}" Grid.Row="3" Grid.Column="1" FontSize ="25"></TextBlock>
+                        <TextBlock Text="Скидка"                          Grid.Row="1" Grid.Column="2" FontSize= "25" Margin="30,0,0,0"></TextBlock>
+                        <TextBlock Text="{Binding ProductDiscountAmount, StringFormat= {}{0}% }" Grid.Row="2" Grid.Column="2" FontSize="25" Margin="30,0,0,0"></TextBlock>
+                        <Button Content="-" Grid.Row="4" Grid.Column="0" Name="minusOneBtn" Click="minusOneBtn_Click"></Button>
+                        <TextBox Text="{Binding PrCount}" Grid.Row="4" Grid.Column="1"></TextBox>
+                        <Button Content="+" Grid.Row="4" Grid.Column="2" Name="plusOneBtn" Click="plusOneBtn_Click"></Button>
                     </Grid>
                 </DataTemplate>
                         
             </ListView.ItemTemplate>
         </ListView>
-        <TextBlock Grid.Row="5">Пункт выдачи</TextBlock>
-        <ComboBox Name="PickupCb">
-            
+        <TextBlock Grid.Row="4" Grid.Column="0">Пункт выдачи</TextBlock>
+        <ComboBox Name="PickupCb" Grid.Row="4" Grid.Column="1">
         </ComboBox>
-        <Button Name="OrderBtn" Grid.Row="6"></Button>
+        <Button Name="OrderBtn" Grid.Row="5" Content="Сохранить" Click="OrderBtn_Click"></Button>
     </Grid>
 </Window>
