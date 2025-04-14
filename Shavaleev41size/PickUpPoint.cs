@@ -11,7 +11,7 @@ namespace Shavaleev41size
 {
     using System;
     using System.Collections.Generic;
-    
+
     public partial class PickUpPoint
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -19,14 +19,13 @@ namespace Shavaleev41size
         {
             this.Order = new HashSet<Order>();
         }
-    
+
         public string PickUpVisual
         {
-            get
-            {
-                return PickUpIndex + ", " + PickUpCity + ", " + PickUpStreet + ", " + PickUpVault;
+            get {
+                return PickUpCity + ", " + PickUpStreet + ", " + PickUpVault; 
             }
-        }
+}
         public int PickUpPointID { get; set; }
         public string PickUpIndex { get; set; }
         public string PickUpCity { get; set; }

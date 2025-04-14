@@ -25,22 +25,72 @@ namespace Shavaleev41size
         private Order currentOrder = new Order();
         private OrderProduct currentOrderProduct = new OrderProduct();
 
+
+        private void CalculateTotalAndDiscount()
+        {
+            decimal total = 0;
+            decimal discount = 0;
+
+            foreach (var orderProduct in selectedOrderProducts)
+            {
+                var product1 = selectedProducts.FirstOrDefault(p => p.ProductArticleNumber == orderProduct.ProductArticleNumber);
+                if (product1 == null) continue;
+
+                decimal price = product1.ProductCost;
+                decimal discountPercent = 0;
+                if (product1.ProductDiscountAmount != null)
+                discountPercent = product1.ProductDiscountAmount;
+
+         
+                total += orderProduct.ProductCount * price;
+
     
+                discount += orderProduct.ProductCount * price * (discountPercent / 100);
+            }
+
+            decimal discountedTotal = total - discount;
+
+            var disc = discount.ToString().Split(',');
+            var discTotal = discountedTotal.ToString().Split(',');
+            var discRes = "00";
+            if (Convert.ToInt32(disc[1]) > 0)
+            {
+                discRes = disc[1];
+            }
+
+            var discTRes = "00";
+            if (Convert.ToInt32(discTotal[1]) > 0)
+            {
+                discTRes = discTotal[1];
+            }
+
+
+            discountTB.Text = "Общая сумма: " + total.ToString() + "Р, скидка: " + disc[0] + "," + discRes + "Р, сумма со скидкой: " + discTotal[0] + ","+ discTRes.ToString() + " Р.";
+        }
+
         public OrderWindow(List<OrderProduct> selectedOrderProducts, List<Product> selectedProducts, User currentUser)
         {
             InitializeComponent();
+
+
 
             var currentPickups = Shavaleev41Entities.getContext().PickUpPoint.ToList();
             
             PickupCb.ItemsSource = currentPickups;
             PickupCb.DisplayMemberPath = "PickUpVisual";
 
+            PickupCb.SelectedIndex = 0;
+
             if (currentUser != null)
             {
                 ClientTB.Text = currentUser.UserSurname + " " + currentUser.UserName + " " + currentUser.UserPatronymic;
+                currentOrder.OrderClientID = currentUser.UserID;
             }
-            else ClientTB.Text = "Гость";
-            currentOrder.OrderClient = currentUser;
+            else
+            {
+                ClientTB.Text = "Гость";
+                currentOrder.OrderClientID = null;
+            }
 
             //TBOrderID.Text = selectedOrderProducts.First().OrderID.ToString();
 
@@ -70,7 +120,7 @@ namespace Shavaleev41size
             //this.selectedOrderProducts = selectedOrderProducts;
             //this.selectedProducts = selectedProducts;
 
-            int currentID = selectedOrderProducts.First().OrderID; //определение номера текущего заказа
+            int currentID = selectedOrderProducts.First().OrderID; 
             currentOrder.OrderID = currentID;
             TBOrderID.Text = currentID.ToString();
 
@@ -107,7 +157,7 @@ namespace Shavaleev41size
             //    }
             //    else
             //    {
-            //        product.PrCount = 1; // Если не найден, устанавливаем 1 (опционально)
+            //        product.PrCount = 1;
             //    }
             //}
 
@@ -117,49 +167,180 @@ namespace Shavaleev41size
             //this.selectedProducts = selectedProducts;
             OrderDP.Text = DateTime.Now.ToString();
 
-            OrderDP.Text = DateTime.Now.ToString();
-            DeliveryDP.Text = DateTime.Parse(OrderDP.Text).AddDays(3).ToString();
+            DeliveryDP.Text = deliveryDate.ToString();
+            setDeliveryDate();
 
-            
- 
+
+
+            CalculateTotalAndDiscount();
+
+
         }
+
+        public void setDeliveryDate()
+        {
+            bool Status = false;
+
+            foreach (var p in selectedProducts)
+            {
+                if (p.ProductQuantityInStock < (p.PrCount + 3))
+                {
+                    Status = true;
+                }
+            }
+
+            deliveryDate = OrderDP.SelectedDate.Value;
+            deliveryDate = Status ? deliveryDate.AddDays(6) : deliveryDate.AddDays(3);
+            currentOrder.OrderDeliveryDate = deliveryDate;
+            DeliveryDP.Text = deliveryDate.ToString();
+            
+        }
+
+        /*
+         * 
+         * var prod = (sender as Button).DataContext as Product;
+            var selectedOP = selectedOrderProducts.FirstOrDefault(p => p.ProductArticleNumber == prod.ProductArticleNumber);
+
+            if (selectedOP != null)
+            {
+                if (selectedOP.ProductCount > 1)
+                {
+                    selectedOP.ProductCount--;
+                    prod.Quantity = selectedOP.ProductCount; // Синхронизируем Quantity
+                    SetDeliveryDate();
+                    CalculateTotalAndDiscount();
+                    ProductListView.Items.Refresh();
+                }
+                else
+                {
+                    // Удаляем OrderProduct из списка
+                    selectedOrderProducts.Remove(selectedOP);
+
+                    // Находим Product в selectedProducts по артикулу (чтобы избежать проблем с ссылками)
+                    var productToRemove = selectedProducts.FirstOrDefault(p => p.ProductArticleNumber == prod.ProductArticleNumber);
+                    if (productToRemove != null)
+                    {
+                        selectedProducts.Remove(productToRemove);
+                    }
+
+                    // Обновляем интерфейс
+                    ProductListView.Items.Refresh();
+                    // Перепривязываем данные, чтобы обновить интерфейс
+                    ProductListView.ItemsSource = null;
+                    ProductListView.ItemsSource = selectedProducts;
+                    SetDeliveryDate();
+                    CalculateTotalAndDiscount();
+                    ProductListView.Items.Refresh();
+
+                    if (selectedProducts.Count == 0)
+                    {
+                        Manager.OrderBtn.Visibility = Visibility.Hidden;
+                        this.Close();
+                    }
+                }
+         * 
+         */
 
         private void minusOneBtn_Click(object sender, RoutedEventArgs e)
         {
             var butt = (sender as Button).DataContext as Product;
+            var selectedOP = selectedOrderProducts.FirstOrDefault(p => p.ProductArticleNumber == butt.ProductArticleNumber);
 
-            //var index = ShoeLV.Items.IndexOf(item);
-            butt.PrCount--;
-            if (butt.PrCount < 1)
+            if (selectedOP != null)
             {
-                selectedProducts.Remove(butt);
+                if (selectedOP.ProductCount > 1)
+                {
+                    selectedOP.ProductCount--;
+                    butt.PrCount = selectedOP.ProductCount; // Синхронизируем Quantity
+                    setDeliveryDate();
+                    CalculateTotalAndDiscount();
+                   ShoeLV.Items.Refresh();
+                }
+                else
+                {
+                    // Удаляем OrderProduct из списка
+                    selectedOrderProducts.Remove(selectedOP);
+
+                    // Находим Product в selectedProducts по артикулу (чтобы избежать проблем с ссылками)
+                    var productToRemove = selectedProducts.FirstOrDefault(p => p.ProductArticleNumber == butt.ProductArticleNumber);
+                    if (productToRemove != null)
+                    {
+                        selectedProducts.Remove(productToRemove);
+                    }
+
+                    // Обновляем интерфейс
+                    ShoeLV.Items.Refresh();
+                    // Перепривязываем данные, чтобы обновить интерфейс
+                    ShoeLV.ItemsSource = null;
+                    ShoeLV.ItemsSource = selectedProducts;
+                    setDeliveryDate();
+                    CalculateTotalAndDiscount();
+                    ShoeLV.Items.Refresh();
+
+                    if (selectedProducts.Count == 0)
+                    {
+                        Manager.OrderBtn.Visibility = Visibility.Hidden;
+                        this.Close();
+                    }
+                }
+            }
+        
+
+
+            //    var butt = (sender as Button).DataContext as Product;
+
+            ////var index = ShoeLV.Items.IndexOf(item);
+            //butt.PrCount--;
+            //currentOrderProduct.ProductCount--;
+            
+            //if (butt.PrCount < 1)
+            //{
+            //    selectedProducts.Remove(butt);
                 
-            }
-            ShoeLV.UpdateLayout();
-            ShoeLV.ItemsSource = selectedProducts.Distinct();
-            if (selectedProducts.Count == 0)
-            {
-                this.Close();
-            }
+            //}
+            //ShoeLV.UpdateLayout();
+            //ShoeLV.ItemsSource = selectedProducts.Distinct();
+
+            //if (selectedProducts.Count == 0)
+            //{
+            //    Manager.OrderBtn.Visibility = Visibility.Hidden;
+            //    ShoeLV.ItemsSource = new List<Product>();
+            //    this.Close();
+                
+            //}
+            //CalculateTotalAndDiscount();
+
 
         }
 
         private void plusOneBtn_Click(object sender, RoutedEventArgs e)
         {
             var butt = (sender as Button).DataContext as Product;
-            //var index = ShoeLV.Items.IndexOf(item);
-            butt.PrCount++;
-            ShoeLV.UpdateLayout();
-            ShoeLV.ItemsSource = selectedProducts.Distinct();
+            var selectedOP = selectedOrderProducts.FirstOrDefault(p => p.ProductArticleNumber == butt.ProductArticleNumber);
+
+            if (selectedOP != null)
+            {
+                selectedOP.ProductCount++;
+                butt.PrCount = selectedOP.ProductCount;
+                setDeliveryDate();
+                CalculateTotalAndDiscount();
+                ShoeLV.Items.Refresh();
+            }
+
+
+            ////var index = ShoeLV.Items.IndexOf(item);
+            //butt.PrCount++;
+            //ShoeLV.ItemsSource = selectedProducts.Distinct();
+            //CalculateTotalAndDiscount();
 
 
         }
 
         private void OrderBtn_Click(object sender, RoutedEventArgs e)
         {
-            currentOrder.OrderID++;
+
             currentOrder.OrderDate = DateTime.Now;
-            currentOrder.PickUpPoint = PickupCb.SelectedItem as PickUpPoint;
+            currentOrder.OrderPickupPoint = PickupCb.SelectedIndex + 1;
 
             bool Status = false;
 
@@ -171,19 +352,32 @@ namespace Shavaleev41size
                 }
             }
 
-            DateTime deliveryDate = OrderDP.SelectedDate.Value;
+            deliveryDate = OrderDP.SelectedDate.Value;
             deliveryDate = Status ? deliveryDate.AddDays(6) : deliveryDate.AddDays(3);
             currentOrder.OrderDeliveryDate = deliveryDate;
 
+            currentOrder.OrderCode = Shavaleev41Entities.getContext().Order.OrderByDescending(p => p.OrderCode).First().OrderCode + 1;
+            currentOrder.OrderStatus = "Новый";
+
+            foreach (var op in selectedOrderProducts)
+            {
+                op.OrderID = currentOrder.OrderID;
+                Shavaleev41Entities.getContext().OrderProduct.Add(op);
+            }
+            
             Shavaleev41Entities.getContext().Order.Add(currentOrder);
+            
             Shavaleev41Entities.getContext().SaveChanges();
             MessageBox.Show("Заказ добавлен");
+            this.DialogResult = true;
+
+            Manager.OrderBtn.Visibility = Visibility.Hidden;
             this.Close();
 
         }
 
-       
-        
+
+        DateTime deliveryDate;
 
     }
 

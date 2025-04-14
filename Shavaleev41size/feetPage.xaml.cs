@@ -69,6 +69,8 @@ namespace Shavaleev41size
             this._currentUser = currentUser;
             InitializeComponent();
 
+            Manager.OrderBtn = openWindow;
+
             if (currentUser != null)
             {
                 fullname.Text = currentUser.UserSurname + " " + currentUser.UserName + " " + currentUser.UserPatronymic;
@@ -157,7 +159,7 @@ namespace Shavaleev41size
                 _selectedProducts.Add(prod);
 
                 var newOrderProd = new OrderProduct();
-                newOrderProd.OrderID = _newOrderID;
+                //newOrderProd.OrderID = _newOrderID;
 
                 newOrderProd.ProductArticleNumber = prod.ProductArticleNumber;
                 newOrderProd.ProductCount = 1;
@@ -167,6 +169,7 @@ namespace Shavaleev41size
                 if (selectedOP.Count() == 0)
                 {
                     _selectedOrderProducts.Add(newOrderProd);
+                    _selectedProducts.Add(prod);
                 }
                 else
                 {
@@ -221,10 +224,19 @@ namespace Shavaleev41size
                 Listv.Items.Refresh();
 
 
+
                 openWindow.Visibility = _selectedProducts.Any() ? Visibility.Visible : Visibility.Hidden;
 
-
-            }
         }
+
+        //if (_selectedProducts.Count == 0)
+        //{
+        //    orderWindow.Visibility = Visibility.Hidden;
+        //}
+        //else
+        //{
+        //    orderWindow.Visibility = Visibility.Visible;
+        //}
+    }
     }
 }

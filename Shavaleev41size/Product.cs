@@ -20,11 +20,7 @@ namespace Shavaleev41size
             this.OrderProduct = new HashSet<OrderProduct>();
         }
     
-        public int PrCount
-        {
-            get; set;
-        }
-
+        public int PrCount { get; set; }
         public string ProductArticleNumber { get; set; }
         public string ProductName { get; set; }
         public string ProductMeasure { get; set; }

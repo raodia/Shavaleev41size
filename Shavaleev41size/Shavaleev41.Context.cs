@@ -16,14 +16,10 @@ namespace Shavaleev41size
     public partial class Shavaleev41Entities : DbContext
     {
         private static Shavaleev41Entities _context;
-
         public static Shavaleev41Entities getContext()
         {
             if (_context == null)
-            {
                 _context = new Shavaleev41Entities();
-
-            }
             return _context;
         }
         public Shavaleev41Entities()
@@ -41,6 +37,7 @@ namespace Shavaleev41size
         public virtual DbSet<PickUpPoint> PickUpPoint { get; set; }
         public virtual DbSet<Product> Product { get; set; }
         public virtual DbSet<Role> Role { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<User> User { get; set; }
     }
 }

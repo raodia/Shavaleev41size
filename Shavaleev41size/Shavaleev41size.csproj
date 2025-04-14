@@ -103,6 +103,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Shavaleev41.edmx</DependentUpon>
     </Compile>
+    <Compile Include="sysdiagrams.cs">
+      <DependentUpon>Shavaleev41.tt</DependentUpon>
+    </Compile>
     <Compile Include="test.xaml.cs">
       <DependentUpon>test.xaml</DependentUpon>
     </Compile>
@@ -202,20 +205,22 @@
     <Resource Include="G783F5.jpg" />
     <Resource Include="H782T5.jpg" />
     <Resource Include="J384T6.jpg" />
+    <Resource Include="А112Т4.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Shavaleev41.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Shavaleev41.Context.cs</LastGenOutput>
       <DependentUpon>Shavaleev41.edmx</DependentUpon>
+      <LastGenOutput>Shavaleev41.Context.cs</LastGenOutput>
     </Content>
     <Content Include="Shavaleev41.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Shavaleev41.edmx</DependentUpon>
       <LastGenOutput>Shavaleev41.cs</LastGenOutput>
     </Content>
-    <Resource Include="А112Т4.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
